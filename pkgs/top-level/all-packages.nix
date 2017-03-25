@@ -3110,6 +3110,8 @@ with pkgs;
 
   networkmanager = callPackage ../tools/networking/network-manager { };
 
+  networkmanager_fortisslvpn = callPackage ../tools/networking/network-manager/fortisslvpn.nix { };
+
   networkmanager_openvpn = callPackage ../tools/networking/network-manager/openvpn.nix { };
 
   networkmanager_pptp = callPackage ../tools/networking/network-manager/pptp.nix { };
