@@ -17,13 +17,13 @@ with lib;
 
 stdenv.mkDerivation rec {
   name = "kubernetes-${version}";
-  version = "1.6.2";
+  version = "1.6.4";
 
   src = fetchFromGitHub {
     owner = "kubernetes";
     repo = "kubernetes";
-    rev = "v${version}";
-    sha256 = "1bvcgd8r41gr3ca6x02xv121mj6vac7vx2h0sd45kbjn7jmwbcjf";
+    rev = "d6f433224538d4f9ca2f7ae19b252e6fcb66a3ae";
+    sha256 = "1waxkr4ycrd23w8pi83gyf6jmawi1nhfzixp70fcwwka5h7p2y91";
   };
 
   buildInputs = [ removeReferencesTo makeWrapper which go rsync go-bindata ];
@@ -40,25 +40,12 @@ stdenv.mkDerivation rec {
     patchShebangs ./hack
   '';
 
-  WHAT="--use_go_build ${concatStringsSep " " components}";
-
-  postBuild = ''
-    ./hack/generate-docs.sh
-    (cd build/pause && cc pause.c -o pause)
-  '';
+  WHAT="--use_go_build cmd/kubectl";
 
   installPhase = ''
     mkdir -p "$out/bin" "$out/share/bash-completion/completions" "$man/share/man" "$pause/bin"
-
     cp _output/local/go/bin/* "$out/bin/"
-    cp build/pause/pause "$pause/bin/pause"
-    cp -R docs/man/man1 "$man/share/man"
-
     $out/bin/kubectl completion bash > $out/share/bash-completion/completions/kubectl
-  '';
-
-  preFixup = ''
-    find $out/bin $pause/bin -type f -exec remove-references-to -t ${go} '{}' +
   '';
 
   meta = {
