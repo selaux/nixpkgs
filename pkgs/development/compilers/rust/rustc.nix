@@ -86,13 +86,6 @@ stdenv.mkDerivation {
 
     # Useful debugging parameter
     # export VERBOSE=1
-  '' +
-  # In src/compiler-rt/cmake/config-ix.cmake, the cmake build falls
-  # back to darwin 10.4. This causes the OS name to be recorded as
-  # "10.4" rather than the expected "osx". But mk/rt.mk expects the
-  # built library name to have an "_osx" suffix on darwin.
-  optionalString stdenv.isDarwin ''
-    substituteInPlace mk/rt.mk --replace "_osx" "_10.4"
   '';
 
   preConfigure = ''
