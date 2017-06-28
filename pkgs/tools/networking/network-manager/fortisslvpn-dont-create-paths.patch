@@ -1,0 +1,14 @@
+diff --git a/src/Makefile.am b/src/Makefile.am
+index 2d5f694..6dab86f 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -78,9 +78,6 @@ nm_fortisslvpn_pppd_plugin_la_LIBADD = \
+ 
+ ###############################################################################
+ 
+-install-data-hook:
+-	$(mkinstalldirs) -m 0700 $(DESTDIR)$(fortisslvpn_statedir)
+-
+ BUILT_SOURCES = \
+ 	nm-fortisslvpn-pppd-service-dbus.h \
+ 	nm-fortisslvpn-pppd-service-dbus.c
