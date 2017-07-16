@@ -136,7 +136,9 @@ let buildCrate = { crateName, crateVersion, dependencies, complete, crateFeature
       if [ -e target/link.final ]; then
         cp target/link.final $out/link
       fi
-      cp -PR target/deps/* $out # */
+      if [ "$(ls -A target/deps)" ]; then # */
+        cp -PR target/deps/* $out # */
+      fi
       if [ "$(ls -A target/build)" ]; then # */
         cp -PR target/build/* $out # */
       fi
