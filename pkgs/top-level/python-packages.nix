@@ -3370,6 +3370,8 @@ in {
     doCheck = false;
   };
 
+  dogtail = callPackage ../development/python-modules/dogtail { };
+
   oslo-vmware = buildPythonPackage rec {
     name = "oslo.vmware-${version}";
     version = "1.22.0";
