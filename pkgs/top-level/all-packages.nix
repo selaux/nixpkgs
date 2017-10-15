@@ -2194,6 +2194,8 @@ with pkgs;
 
   gdmap = callPackage ../tools/system/gdmap { };
 
+  geckodriver = callPackage ../development/tools/selenium/geckodriver { };
+
   gen-oath-safe = callPackage ../tools/security/gen-oath-safe { };
 
   genext2fs = callPackage ../tools/filesystems/genext2fs { };

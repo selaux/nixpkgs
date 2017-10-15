@@ -1,5 +1,7 @@
 { stdenv, fetchurl, makeWrapper, jre, jdk, gcc, xorg
-, htmlunit-driver, chromedriver, chromeSupport ? true }:
+, htmlunit-driver, htmlunitSupport ? true
+, chromedriver, chromeSupport ? true
+, geckodriver, firefoxSupport ? true }:
 
 with stdenv.lib;
 
@@ -9,6 +11,7 @@ let
   arch = if stdenv.system == "x86_64-linux" then "amd64"
          else if stdenv.system == "i686-linux" then "i386"
          else "";
+  additionalClasspath = optionalString htmlunitSupport ":${htmlunit-driver}/share/lib/${htmlunit-driver.name}/${htmlunit-driver.name}.jar";
 
 in stdenv.mkDerivation rec {
   name = "selenium-server-standalone-${version}";
@@ -27,8 +30,9 @@ in stdenv.mkDerivation rec {
     mkdir -p $out/share/lib/${name}
     cp $src $out/share/lib/${name}/${name}.jar
     makeWrapper ${jre}/bin/java $out/bin/selenium-server \
-      --add-flags "-cp $out/share/lib/${name}/${name}.jar:${htmlunit-driver}/share/lib/${htmlunit-driver.name}/${htmlunit-driver.name}.jar" \
+      --add-flags "-cp $out/share/lib/${name}/${name}.jar${additionalClasspath}" \
       --add-flags ${optionalString chromeSupport "-Dwebdriver.chrome.driver=${chromedriver}/bin/chromedriver"} \
+      --add-flags ${optionalString firefoxSupport "-Dwebdriver.gecko.driver=${geckodriver}/bin/geckodriver"} \
       --add-flags "org.openqa.grid.selenium.GridLauncherV3"
   '';
 
