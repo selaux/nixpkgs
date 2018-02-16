@@ -1,0 +1,17 @@
+diff --git a/src/http.c b/src/http.c
+index 6462585..6cc09fc 100644
+--- a/src/http.c
++++ b/src/http.c
+@@ -534,7 +534,11 @@ int auth_log_in(struct tunnel *tunnel)
+ 		get_value_from_response(res, "reqid=", reqid, 32);
+ 		get_value_from_response(res, "polid=", polid, 32);
+ 
+-		read_password("Two-factor authentication token: ", tokenresponse, 255);
++		if (tunnel->config->otp[0] == '\0') {
++			read_password("Two-factor authentication token: ", tokenresponse, 255);
++		} else {
++			url_encode(tokenresponse, tunnel->config->otp);
++		}
+ 
+ 		snprintf(data, 256, "username=%s&realm=%s&reqid=%s&polid=%s&grp=%s"
+ 		         "&code=%s&code2=&redir=%%2Fremote%%2Findex&just_logged_in=1",

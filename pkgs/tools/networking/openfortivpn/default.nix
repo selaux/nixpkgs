@@ -24,6 +24,8 @@ in stdenv.mkDerivation {
     substituteInPlace src/tunnel.c --replace "/usr/sbin/pppd" "${ppp}/bin/pppd"
   '';
 
+  patches = [ ./otp_noninteractive.patch ];
+
   enableParallelBuilding = true;
 
   meta = {
