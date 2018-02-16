@@ -7,7 +7,7 @@ let
   cfg = config.networking.networkmanager;
 
   # /var/lib/misc is for dnsmasq.leases.
-  stateDirs = "/var/lib/NetworkManager /var/lib/dhclient /var/lib/misc";
+  stateDirs = "/var/lib/NetworkManager /var/lib/NetworkManager-fortisslvpn /var/lib/dhclient /var/lib/misc";
 
   dns =
     if cfg.useDnsmasq then "dnsmasq"
