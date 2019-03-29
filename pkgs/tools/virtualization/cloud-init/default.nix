@@ -1,6 +1,6 @@
 { lib, pythonPackages, fetchurl, cloud-utils }:
 
-let version = "0.7.9";
+let version = "18.5";
 
 in pythonPackages.buildPythonApplication rec {
   name = "cloud-init-${version}";
@@ -8,7 +8,7 @@ in pythonPackages.buildPythonApplication rec {
 
   src = fetchurl {
     url = "https://launchpad.net/cloud-init/trunk/${version}/+download/cloud-init-${version}.tar.gz";
-    sha256 = "0wnl76pdcj754pl99wxx76hkir1s61x0bg0lh27sdgdxy45vivbn";
+    sha256 = "14ns2fc5ybw94kwwlzfawniwkcsvjzxv1my9ikmb7254isriw3b5";
   };
 
   patches = [ ./add-nixos-support.patch ];
@@ -29,7 +29,7 @@ in pythonPackages.buildPythonApplication rec {
     '';
 
   propagatedBuildInputs = with pythonPackages; [ cheetah jinja2 prettytable
-    oauthlib pyserial configobj pyyaml requests jsonpatch ];
+    oauthlib pyserial configobj pyyaml requests jsonpatch jsonschema ];
 
   checkInputs = with pythonPackages; [ contextlib2 httpretty mock unittest2 ];
 
