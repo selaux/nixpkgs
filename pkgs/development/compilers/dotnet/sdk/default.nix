@@ -6,29 +6,32 @@
 , libuuid
 , zlib
 , curl
+, makeWrapper
 }:
-
 let
   rpath = stdenv.lib.makeLibraryPath [ stdenv.cc.cc libunwind libuuid icu openssl zlib curl ];
 in
   stdenv.mkDerivation rec {
-    version = "2.2.203";
-    netCoreVersion = "2.2.4";
+    version = "2.2.401";
+    netCoreVersion = "2.2.6";
     pname = "dotnet-sdk";
 
+    buildInputs = [ makeWrapper ];
+
     src = fetchurl {
-      url = "https://dotnetcli.azureedge.net/dotnet/Sdk/${version}/${pname}-${version}-linux-x64.tar.gz";
-      # use sha512 from the download page
-      sha512 = "8DA955FA0AEEBB6513A6E8C4C23472286ED78BD5533AF37D79A4F2C42060E736FDA5FD48B61BF5AEC10BBA96EB2610FACC0F8A458823D374E1D437B26BA61A5C";
+      url = "https://dotnetcli.azureedge.net/dotnet/Sdk/${version}/dotnet-sdk-${version}-osx-x64.tar.gz";
+      sha512 = "1lf1izr2ig524cvid969698rs7dv2r8540a73810f4a8d143i1c2fk57mb5dy28xr5vl1dshhmpj61507asnkb2lp3vw5dm8zxwcpwh";
     };
 
     sourceRoot = ".";
 
     buildPhase = ''
       runHook preBuild
-      patchelf --set-interpreter "${stdenv.cc.bintools.dynamicLinker}" ./dotnet
+    '' + stdenv.lib.optionalString (!stdenv.isDarwin) ''
+      patchelf --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" ./dotnet
       patchelf --set-rpath "${rpath}" ./dotnet
-      find -type f -name "*.so" -exec patchelf --set-rpath '$ORIGIN:${rpath}' {} \;
+    '' + ''
+      find -type f -name "*.so" -exec patchelf --set-rpath "${rpath}" {} \;
       echo -n "dotnet-sdk version: "
       ./dotnet --version
       runHook postBuild
@@ -42,12 +45,14 @@ in
       cp -r ./ $out
       ln -s $out/dotnet $out/bin/dotnet
       runHook postInstall
+    '' + stdenv.lib.optionalString stdenv.isDarwin ''
+        wrapProgram $out/bin/dotnet --set DOTNET_SKIP_FIRST_TIME_EXPERIENCE true
     '';
 
     meta = with stdenv.lib; {
       homepage = https://dotnet.github.io/;
       description = ".NET Core SDK ${version} with .NET Core ${netCoreVersion}";
-      platforms = [ "x86_64-linux" ];
+      platforms = stdenv.lib.platforms.unix;
       maintainers = with maintainers; [ kuznero ];
       license = licenses.mit;
     };
